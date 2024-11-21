@@ -1,1 +1,1 @@
-module container-network-interface
+module github.com/rschoonheim/cni
