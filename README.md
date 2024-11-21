@@ -9,5 +9,7 @@ The project follows the following directory structure:
 
 ```bash
 |-- src/ # Source code
+  |-- ./ # Facade like functions that are meant to be used by the package users
+  |-- internal/ # Modules that are not meant to be used outside the package
 |-- test/ # Test code
 ```
