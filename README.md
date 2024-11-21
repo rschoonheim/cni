@@ -11,5 +11,5 @@ The project follows the following directory structure:
 |-- src/ # Source code
   |-- ./ # Facade like functions that are meant to be used by the package users
   |-- internal/ # Modules that are not meant to be used outside the package
-|-- test/ # Test code
+|-- test/ # Mirror of the src/ directory but for tests
 ```
