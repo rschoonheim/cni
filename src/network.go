@@ -23,8 +23,6 @@ func (n *Network) GetId() string {
 func (n *Network) ExistsOnHost() (bool, error) {
 	_, err := link.Exists(n.GetId())
 	if err != nil {
-		println(err.Error())
-
 		return false, err
 	}
 	return true, nil
