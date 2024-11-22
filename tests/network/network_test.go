@@ -1,8 +1,8 @@
-package cni_test
+package network_test
 
 import (
-	cni "github.com/rschoonheim/cni/src"
 	"github.com/rschoonheim/cni/src/ip/link"
+	cni "github.com/rschoonheim/cni/src/network"
 	"testing"
 )
 

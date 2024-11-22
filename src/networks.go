@@ -2,71 +2,60 @@ package cni
 
 import (
 	"errors"
-	"github.com/google/uuid"
-	"github.com/rschoonheim/cni/src/ip/link"
+	"github.com/rschoonheim/cni/src/network"
 )
 
-type NetworkCollection struct {
-	// networks - items in the collection.
-	networks []*Network `json:"networks"`
+type Networks struct {
+	networks map[string]*network.Instance
 }
 
-// NetworkCollectionCreate - creates a new network collection.
-func NetworkCollectionCreate() *NetworkCollection {
-	return &NetworkCollection{
-		networks: make([]*Network, 0),
+// NetworksCreate - creates a new networks collection.
+func NetworksCreate() *Networks {
+	return &Networks{
+		networks: make(map[string]*network.Instance, 0),
 	}
 }
 
-// GetNetworks - returns the networks in the collection.
-func (nc *NetworkCollection) GetNetworks() []*Network {
-	return nc.networks
+// Get - returns a network from the collection.
+func (n *Networks) Get(id string) *network.Instance {
+	return n.networks[id]
 }
 
-// IdExists - checks if a network id exists in the collection.
-func (nc *NetworkCollection) IdExists(id string) bool {
-	for _, network := range nc.networks {
-		if network.GetId() == id {
-			return true
-		}
+// Add - adds a network to the collection.
+func (n *Networks) Add(id string) error {
+	if n.Get(id) != nil {
+		return errors.New("NETWORK_ID_NOT_UNIQUE")
 	}
-	return false
-}
-
-// GenerateNetworkId - generates a unique network id.
-func (nc *NetworkCollection) GenerateNetworkId() string {
-	var id string = uuid.New().String()
-	if nc.IdExists(id) {
-		return nc.GenerateNetworkId()
-	}
-
-	// When the network id exists on the host, generate a new id.
-	//
-	existsOnHost, _ := link.Exists(id)
-	if existsOnHost {
-		return nc.GenerateNetworkId()
-	}
-
-	return id
-}
-
-// Add - add network to collection.
-func (nc *NetworkCollection) Add(network *Network) error {
-	if nc.IdExists(network.GetId()) {
-		return errors.New("NETWORK_ID_EXISTS")
-	}
-
-	nc.networks = append(nc.networks, network)
+	n.networks[id] = network.NetworkCreate(id)
 	return nil
 }
 
-// Remove - remove network from collection.
-func (nc *NetworkCollection) Remove(network *Network) error {
-	for i, n := range nc.networks {
-		if n == network {
-			nc.networks = append(nc.networks[:i], nc.networks[i+1:]...)
-			return nil
-		}
+// Set - sets a network in the collection.
+func (n *Networks) Set(id string, network *network.Instance) {
+	n.networks[id] = network
+}
+
+// Remove - removes a network from the collection.
+func (n *Networks) Remove(id string) {
+	delete(n.networks, id)
+}
+
+// Exists - checks if a network exists in the collection.
+func (n *Networks) Exists(id string) bool {
+	return n.Get(id) != nil
+}
+
+// Initialize - initializes the network with the given ID.
+func (n *Networks) Initialize(id string) error {
+	network := n.Get(id)
+	if network == nil {
+		return errors.New("NETWORK_DOES_NOT_EXIST")
 	}
-	return errors.New("NETWORK_NOT_FOUND")
+
+	err := network.Initialize()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
