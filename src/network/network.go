@@ -1,6 +1,7 @@
 package network
 
 import (
+	"errors"
 	"github.com/rschoonheim/cni/src/ip/link"
 )
 
@@ -24,5 +25,5 @@ func (n *Instance) ExistsOnHost() (bool, error) {
 
 // Initialize - initializes the network.
 func (n *Instance) Initialize() error {
-	return nil
+	return errors.New("XXX")
 }

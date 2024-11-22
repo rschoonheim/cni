@@ -2,25 +2,13 @@ package network_test
 
 import (
 	"github.com/rschoonheim/cni/src/ip/link"
-	cni "github.com/rschoonheim/cni/src/network"
+	"github.com/rschoonheim/cni/src/network"
 	"testing"
 )
 
-// TestNetworkCreate - tests the NetworkCreate function.
-func TestNetworkCreate(t *testing.T) {
-	network := cni.NetworkCreate("test")
-	if network == nil {
-		t.Error("NetworkCreate returned nil")
-	}
-
-	if network.GetId() != "test" {
-		t.Errorf("NetworkCreate returned network with ID %s, expected test", network.GetId())
-	}
-}
-
 // TestExistsOnHostReturnsFalseWhenNetworkDoesNotExist - tests the ExistsOnHost function.
 func TestExistsOnHostReturnsFalseWhenNetworkDoesNotExist(t *testing.T) {
-	network := cni.NetworkCreate("test")
+	network := network.NetworkCreate("test")
 	exists, _ := network.ExistsOnHost()
 	if exists {
 		t.Error("ExistsOnHost returned true, expected false")
@@ -33,7 +21,7 @@ func TestExistsOnHostReturnsTrueWhenNetworkExists(t *testing.T) {
 		return true, nil
 	}
 
-	network := cni.NetworkCreate("test")
+	network := network.NetworkCreate("test")
 	exists, _ := network.ExistsOnHost()
 	if !exists {
 		t.Error("ExistsOnHost returned false, expected true")
